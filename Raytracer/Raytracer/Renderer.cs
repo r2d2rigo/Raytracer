@@ -17,8 +17,8 @@ namespace Raytracer
             var fovTangent = (float)Math.Tan(Math.PI / 4.0);
 
             var camera = new Camera(Vector3.Zero, -Vector3.UnitZ);
-            var groundPlane = new Plane(-Vector3.UnitY, 0);
-            var sphere = new Sphere(-Vector3.UnitZ * 3.0f, 1.0f);
+            var groundPlane = new Plane(-Vector3.UnitY, 0, Colors.Gray);
+            var sphere = new Sphere(-Vector3.UnitZ * 3.0f, 1.0f, Colors.White);
 
             for (int y = 0; y < target.Height; y++)
             {
@@ -42,11 +42,11 @@ namespace Raytracer
 
                     if (ray.Intersects(sphere))
                     {
-                        target.SetPixel(x, y, Colors.White);
+                        target.SetPixel(x, y, sphere.Color);
                     }
                     else if (ray.Intersects(groundPlane))
                     {
-                        target.SetPixel(x, y, Colors.Gray);
+                        target.SetPixel(x, y, groundPlane.Color);
                     }
                 }
             }
