@@ -16,32 +16,40 @@ namespace Raytracer.Geometry
             Direction = direction;
         }
 
-        public bool Intersects(Plane plane)
+        public void Intersects(Plane plane, out IntersectionResult result)
         {
             var vectorsAngle = Vector3.Dot(plane.Normal, Direction);
+
+            result.IsHit = false;
+            result.Length = 0;
 
             if (vectorsAngle >= MINIMUM_VECTORS_ANGLE)
             {
                 var planePosition = plane.Normal * plane.Distance;
                 var planeToRay = planePosition - Position;
-                var t = Vector3.Dot(planeToRay, plane.Normal) / vectorsAngle;
+                var length = Vector3.Dot(planeToRay, plane.Normal) / vectorsAngle;
 
-                return t >= 0;
+                if (length  >= 0)
+                {
+                    result.IsHit = true;
+                    result.Length = length;
+                }
             }
-
-            return false;
         }
 
-        public bool Intersects(Sphere sphere)
+        public void Intersects(Sphere sphere, out IntersectionResult result)
         {
             var rayToSphere = sphere.Position - Position;
             float rayTangent = Vector3.Dot(rayToSphere, Direction);
             float tangentDistanceSquared = Vector3.Dot(rayToSphere, rayToSphere) - (rayTangent * rayTangent);
 
+            result.IsHit = false;
+            result.Length = 0;
+
             var squaredRadius = sphere.Radius * sphere.Radius;
             if (tangentDistanceSquared > squaredRadius)
             {
-                return false;
+                return;
             }
 
             float intersectionToTangent = (float)Math.Sqrt(squaredRadius - tangentDistanceSquared);
@@ -61,11 +69,12 @@ namespace Raytracer.Geometry
 
                 if (distanceToIntersection1 < 0)
                 {
-                    return false;
+                    return;
                 }
             }
 
-            return true;
+            result.IsHit = true;
+            result.Length = distanceToIntersection1;
         }
     }
 }

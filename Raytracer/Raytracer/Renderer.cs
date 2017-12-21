@@ -16,7 +16,7 @@ namespace Raytracer
 
             var targetAspectRatio = target.Width / (float)target.Height;
 
-            var camera = new Camera(Vector3.Zero, -Vector3.UnitZ, 60.0f);
+            var camera = new Camera(Vector3.Zero, new Vector3(0.0f, 0.0f, -3.0f), 60.0f);
             var fovTangent = (float)Math.Tan(camera.Fov * Math.PI / 180.0);
 
             var groundPlane = new Plane(Vector3.UnitY, 0f, Colors.Gray);
@@ -25,7 +25,7 @@ namespace Raytracer
             spheres.Add(new Sphere(new Vector3(-0.75f, 0.25f, -1.0f), 0.25f, Colors.CornflowerBlue));
             spheres.Add(new Sphere(new Vector3(1.0f, -0.25f, -1.5f), 0.5f, Colors.BlueViolet));
             spheres.Add(new Sphere(new Vector3(-0.75f, -0.4f, -2f), 0.75f, Colors.LightPink));
-            spheres.Add(new Sphere(new Vector3(1.5f, 0.5f, -2.5f), 0.5f, Colors.LimeGreen));
+            spheres.Add(new Sphere(new Vector3(1.0f, 0.25f, -2.25f), 0.5f, Colors.LimeGreen));
             spheres.Add(new Sphere(new Vector3(0.0f, 0.0f, -3.0f), 1.0f, Colors.White));
 
             for (int y = 0; y < target.Height; y++)
@@ -46,18 +46,26 @@ namespace Raytracer
                     var pixelRayDirection = Vector3.Normalize(pixelCameraCoordinates - camera.Position);
                     pixelRayDirection = Vector3.Transform(pixelRayDirection, camera.CameraToWorld);
 
-                    var ray = new Ray(camera.Position, Vector3.Normalize(pixelRayDirection));
+                    var hitDistance = float.MaxValue;
 
-                    if (ray.Intersects(groundPlane))
+                    var ray = new Ray(camera.Position, Vector3.Normalize(pixelRayDirection));
+                    var hitResult = new IntersectionResult();
+
+                    ray.Intersects(groundPlane, out hitResult);
+
+                    if (hitResult.IsHit && hitResult.Length < hitDistance)
                     {
                         target.SetPixel(x, y, groundPlane.Color);
                     }
 
                     foreach (var sphere in spheres)
                     {
-                        if (ray.Intersects(sphere))
+                        ray.Intersects(sphere, out hitResult);
+
+                        if (hitResult.IsHit && hitResult.Length < hitDistance)
                         {
                             target.SetPixel(x, y, sphere.Color);
+                            hitDistance = hitResult.Length;
                         }
                     }
                 }
