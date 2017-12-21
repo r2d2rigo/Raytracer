@@ -22,7 +22,7 @@ namespace Raytracer.Geometry
 
             if (vectorsAngle >= MINIMUM_VECTORS_ANGLE)
             {
-                var planePosition = plane.Normal * plane.D;
+                var planePosition = plane.Normal * plane.Distance;
                 var planeToRay = planePosition - Position;
                 var t = Vector3.Dot(planeToRay, plane.Normal) / vectorsAngle;
 

@@ -3,6 +3,7 @@ using Raytracer.Graphics;
 using System;
 using System.Numerics;
 using System.Windows.Media;
+using Plane = Raytracer.Geometry.Plane;
 
 namespace Raytracer
 {
