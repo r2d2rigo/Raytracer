@@ -1,4 +1,5 @@
-﻿using Raytracer.Graphics;
+﻿using Raytracer.Geometry;
+using Raytracer.Graphics;
 using System;
 using System.Numerics;
 using System.Windows.Media;
@@ -13,6 +14,8 @@ namespace Raytracer
 
             var targetAspectRatio = target.Width / (float)target.Height;
             var fovTangent = (float)Math.Tan(Math.PI / 4.0);
+
+            var groundPlane = new Plane(-Vector3.UnitY, 0);
 
             for (int y = 0; y < target.Height; y++)
             {
@@ -29,11 +32,14 @@ namespace Raytracer
                         pixelScreenCoordinates.Y * fovTangent,
                         -1.0f);
 
-                    var cameraToWorld = Matrix4x4.CreateLookAt(Vector3.Zero, -Vector3.UnitZ, Vector3.UnitY);
+                    var cameraPosition = Vector3.Zero;
+                    var cameraToWorld = Matrix4x4.CreateLookAt(cameraPosition, -Vector3.UnitZ , Vector3.UnitY);
                     var pixelRayDirection = Vector3.Normalize(pixelCameraCoordinates - Vector3.Zero);
                     pixelRayDirection = Vector3.Transform(pixelRayDirection, cameraToWorld);
 
-                    if (pixelRayDirection.Y < 0)
+                    var ray = new Ray(cameraPosition, Vector3.Normalize(pixelRayDirection));
+
+                    if (ray.Intersects(groundPlane))
                     {
                         target.SetPixel(x, y, Colors.Gray);
                     }
