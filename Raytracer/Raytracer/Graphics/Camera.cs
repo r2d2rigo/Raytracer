@@ -51,7 +51,6 @@ namespace Raytracer.Graphics
         private void RecalculateMatrix()
         {
             var lookAtMatrix = Matrix4x4.CreateLookAt(Position, Target, Vector3.UnitY);
-            Matrix4x4.Invert(lookAtMatrix, out lookAtMatrix);
             CameraToWorld = lookAtMatrix;
         }
     }
