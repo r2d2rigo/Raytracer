@@ -17,6 +17,7 @@ namespace Raytracer
 
             var camera = new Camera(Vector3.Zero, -Vector3.UnitZ);
             var groundPlane = new Plane(-Vector3.UnitY, 0);
+            var sphere = new Sphere(-Vector3.UnitZ * 3.0f, 1.0f);
 
             for (int y = 0; y < target.Height; y++)
             {
@@ -26,7 +27,7 @@ namespace Raytracer
                         (x + 0.5f) / target.Width, 
                         (y + 0.5f) / target.Height);
                     var pixelScreenCoordinates = new Vector2(
-                        (2.0f * pixelDeviceCoordinates.X) - 1.0f,  
+                        (2.0f * pixelDeviceCoordinates.X) - 1.0f,
                         1.0f - (2.0f * pixelDeviceCoordinates.Y));
                     var pixelCameraCoordinates = new Vector3(
                         pixelScreenCoordinates.X * targetAspectRatio * fovTangent,
@@ -38,7 +39,11 @@ namespace Raytracer
 
                     var ray = new Ray(camera.Position, Vector3.Normalize(pixelRayDirection));
 
-                    if (ray.Intersects(groundPlane))
+                    if (ray.Intersects(sphere))
+                    {
+                        target.SetPixel(x, y, Colors.White);
+                    }
+                    else if (ray.Intersects(groundPlane))
                     {
                         target.SetPixel(x, y, Colors.Gray);
                     }

@@ -31,5 +31,41 @@ namespace Raytracer.Geometry
 
             return false;
         }
+
+        public bool Intersects(Sphere sphere)
+        {
+            var rayToSphere = sphere.Position - Position;
+            float rayTangent = Vector3.Dot(rayToSphere, Direction);
+            float tangentDistanceSquared = Vector3.Dot(rayToSphere, rayToSphere) - (rayTangent * rayTangent);
+
+            var squaredRadius = sphere.Radius * sphere.Radius;
+            if (tangentDistanceSquared > squaredRadius)
+            {
+                return false;
+            }
+
+            float intersectionToTangent = (float)Math.Sqrt(squaredRadius - tangentDistanceSquared);
+            var distanceToIntersection1 = rayTangent - intersectionToTangent;
+            var distanceToIntersection2 = rayTangent + intersectionToTangent;
+
+            if (distanceToIntersection1 > distanceToIntersection2)
+            {
+                var temp = distanceToIntersection1;
+                distanceToIntersection1 = distanceToIntersection2;
+                distanceToIntersection2 = temp;
+            }
+
+            if (distanceToIntersection1 < 0)
+            {
+                distanceToIntersection1 = distanceToIntersection2;
+
+                if (distanceToIntersection1 < 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }
