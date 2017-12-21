@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Raytracer"
         mc:Ignorable="d"
-        Title="Raytracer" Height="600" Width="800">
+        Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Image x:Name="_target" VerticalAlignment="Center" HorizontalAlignment="Center" Width="640" Height="480" />
+        
     </Grid>
 </Window>
