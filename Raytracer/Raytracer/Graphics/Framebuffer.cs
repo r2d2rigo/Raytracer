@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Raytracer.Renderer
+namespace Raytracer.Graphics
 {
     public class Framebuffer
     {
@@ -34,6 +33,25 @@ namespace Raytracer.Renderer
             }
         }
 
+        public void SetPixel(int x, int y, Color color)
+        {
+            if (x < 0 || x >= Width)
+            {
+                throw new InvalidOperationException("Pixel x value out of range.");
+            }
+
+            if (y < 0 || y >= Height)
+            {
+                throw new InvalidOperationException("Pixel y value out of range.");
+            }
+
+            var bufferOffset = (x + (y * Width)) * (Format.BitsPerPixel / 8);
+            _bufferData[bufferOffset] = color.B;
+            _bufferData[bufferOffset + 1] = color.G;
+            _bufferData[bufferOffset + 2] = color.R;
+            _bufferData[bufferOffset + 3] = color.A;
+        }
+
         public void CopyTo(WriteableBitmap bitmap)
         {
             if (bitmap.Width != Width)
@@ -52,7 +70,7 @@ namespace Raytracer.Renderer
             }
 
             bitmap.Lock();
-            bitmap.WritePixels(new Int32Rect(0, 0, Width, Height), _bufferData, Width * Format.BitsPerPixel, 0);
+            bitmap.WritePixels(new Int32Rect(0, 0, Width, Height), _bufferData, Width * (Format.BitsPerPixel / 8), 0);
             bitmap.Unlock();
         }
     }
