@@ -15,6 +15,7 @@ namespace Raytracer
             var targetAspectRatio = target.Width / (float)target.Height;
             var fovTangent = (float)Math.Tan(Math.PI / 4.0);
 
+            var camera = new Camera(Vector3.Zero, -Vector3.UnitZ);
             var groundPlane = new Plane(-Vector3.UnitY, 0);
 
             for (int y = 0; y < target.Height; y++)
@@ -32,13 +33,10 @@ namespace Raytracer
                         pixelScreenCoordinates.Y * fovTangent,
                         -1.0f);
 
-                    var cameraPosition = Vector3.Zero;
-                    var cameraToWorld = Matrix4x4.CreateLookAt(cameraPosition, -Vector3.UnitZ , Vector3.UnitY);
-                    Matrix4x4.Invert(cameraToWorld, out cameraToWorld);
-                    var pixelRayDirection = Vector3.Normalize(pixelCameraCoordinates - Vector3.Zero);
-                    pixelRayDirection = Vector3.Transform(pixelRayDirection, cameraToWorld);
+                    var pixelRayDirection = Vector3.Normalize(pixelCameraCoordinates - camera.Position);
+                    pixelRayDirection = Vector3.Transform(pixelRayDirection, camera.CameraToWorld);
 
-                    var ray = new Ray(cameraPosition, Vector3.Normalize(pixelRayDirection));
+                    var ray = new Ray(camera.Position, Vector3.Normalize(pixelRayDirection));
 
                     if (ray.Intersects(groundPlane))
                     {
