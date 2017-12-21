@@ -34,6 +34,7 @@ namespace Raytracer
 
                     var cameraPosition = Vector3.Zero;
                     var cameraToWorld = Matrix4x4.CreateLookAt(cameraPosition, -Vector3.UnitZ , Vector3.UnitY);
+                    Matrix4x4.Invert(cameraToWorld, out cameraToWorld);
                     var pixelRayDirection = Vector3.Normalize(pixelCameraCoordinates - Vector3.Zero);
                     pixelRayDirection = Vector3.Transform(pixelRayDirection, cameraToWorld);
 
