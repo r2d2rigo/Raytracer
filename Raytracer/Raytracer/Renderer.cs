@@ -1,6 +1,7 @@
 ﻿using Raytracer.Geometry;
 using Raytracer.Graphics;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Media;
 using Plane = Raytracer.Geometry.Plane;
@@ -17,8 +18,15 @@ namespace Raytracer
             var fovTangent = (float)Math.Tan(Math.PI / 4.0);
 
             var camera = new Camera(Vector3.Zero, -Vector3.UnitZ);
+
             var groundPlane = new Plane(-Vector3.UnitY, 0, Colors.Gray);
-            var sphere = new Sphere(-Vector3.UnitZ * 3.0f, 1.0f, Colors.White);
+
+            var spheres = new List<Sphere>();
+            spheres.Add(new Sphere(new Vector3(-0.75f, 0.25f, -1.0f), 0.25f, Colors.CornflowerBlue));
+            spheres.Add(new Sphere(new Vector3(1.0f, -0.25f, -1.5f), 0.5f, Colors.BlueViolet));
+            spheres.Add(new Sphere(new Vector3(-0.75f, -0.4f, -2f), 0.75f, Colors.LightPink));
+            spheres.Add(new Sphere(new Vector3(1.5f, 0.5f, -2.5f), 0.5f, Colors.LimeGreen));
+            spheres.Add(new Sphere(new Vector3(0.0f, 0.0f, -3.0f), 1.0f, Colors.White));
 
             for (int y = 0; y < target.Height; y++)
             {
@@ -40,13 +48,17 @@ namespace Raytracer
 
                     var ray = new Ray(camera.Position, Vector3.Normalize(pixelRayDirection));
 
-                    if (ray.Intersects(sphere))
-                    {
-                        target.SetPixel(x, y, sphere.Color);
-                    }
-                    else if (ray.Intersects(groundPlane))
+                    if (ray.Intersects(groundPlane))
                     {
                         target.SetPixel(x, y, groundPlane.Color);
+                    }
+
+                    foreach (var sphere in spheres)
+                    {
+                        if (ray.Intersects(sphere))
+                        {
+                            target.SetPixel(x, y, sphere.Color);
+                        }
                     }
                 }
             }
