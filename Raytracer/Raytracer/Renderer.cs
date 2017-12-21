@@ -15,9 +15,9 @@ namespace Raytracer
             target.Clear(Colors.Black);
 
             var targetAspectRatio = target.Width / (float)target.Height;
-            var fovTangent = (float)Math.Tan(Math.PI / 4.0);
 
-            var camera = new Camera(Vector3.Zero, -Vector3.UnitZ);
+            var camera = new Camera(Vector3.Zero, -Vector3.UnitZ, 60.0f);
+            var fovTangent = (float)Math.Tan(camera.Fov * Math.PI / 180.0);
 
             var groundPlane = new Plane(Vector3.UnitY, 0f, Colors.Gray);
 

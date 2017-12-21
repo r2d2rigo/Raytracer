@@ -38,12 +38,15 @@ namespace Raytracer.Graphics
             }
         }
 
+        public float Fov { get; set; }
+
         public Matrix4x4 CameraToWorld { get; private set; }
 
-        public Camera(Vector3 position, Vector3 target)
+        public Camera(Vector3 position, Vector3 target, float fov)
         {
             Position = position;
             Target = target;
+            Fov = fov;
 
             RecalculateMatrix();
         }
